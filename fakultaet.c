@@ -18,3 +18,8 @@ int main(int argc, char const *argv[])
 	printf("%d\n", fakultaet(eingabe));
 	return 0;
 }
+
+/*
+Übung 3 (AGS 3.5)
+Schreiben Sie für die Berechnung der Fakultätsfunktion ein C–Programm, welches eine natürliche Zahl als Eingabe fordert und den zugeordneten Funktionswert ausgibt.
+*/
