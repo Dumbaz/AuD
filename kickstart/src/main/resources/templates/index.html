@@ -1,0 +1,177 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <li class="highlight"><sales class="icon"></sales>Kartenverkauf</li>
+          <a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+          <a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">x</a>
+    </nav>
+    <main id="sales">
+
+            <select id="event" onchange="location = this.options[this.selectedIndex].value">
+            	<div th:each="ev : ${catalog}" th:if="${ev.getExpired() == false}">
+            		<div th:if="${ev.sellable() == true}">
+            			<option selected="selected" th:if="${ev == event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.identifier} + '/' + ${ev.getAppointments().get(0).toUrl()}}"></option>
+						<option th:if="${ev != event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.identifier} + '/' + ${ev.getAppointments().get(0).toUrl()}}"></option>
+					</div>
+					<div th:if="${ev.getClass().getName().substring(19) == 'AudioGuide'}">
+						<option selected="selected" th:if="${ev == event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.identifier} + '/0'}"></option>
+						<option th:if="${ev != event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.identifier} + '/0'}"></option>
+					</div>
+				</div>
+			</select>
+        
+  		    <select id="date" th:each="ev : ${catalog}" th:if="${ev == event and ev.getClass().getName().substring(19) != 'AudioGuide'}" onchange="location = this.options[this.selectedIndex].value">
+		    	<div th:each="a : ${ev.getAppointments()}" th:if="${a.getRehearsal() == false}">
+		    		<option selected="selected" th:if="${a.toUrl() == appointment}" th:text="${a.toString()}" th:value="@{'/seats/' + ${ev.identifier} + '/' + ${a.toUrl()}}"></option>
+		    		<option th:if="${a.toUrl() != appointment}" th:text="${a.toString()}" th:value="@{'/seats/' + ${ev.identifier} + '/' + ${a.toUrl()}}"></option>
+		    	</div>
+			</select>
+			
+			<div th:each="ev : ${catalog}" th:if="${ev == event}">
+	        	<seats th:each="a : ${ev.getAppointments()}" th:if="${a.toUrl() == appointment and (eventClass != 'Tour' and eventClass != 'AudioGuide')}">
+	        		<span th:each="s : ${a.getSeats()}">
+	        			<input type="checkbox" th:if="${s == 4}" class="soldA" onclick="price()" />
+	        			<input type="checkbox" th:if="${s == 3}" class="soldV" onclick="price()" />
+	        			<input type="checkbox" th:if="${s == 2}" class="reserved" onclick="price()"/>
+	        			<input type="checkbox" th:if="${s == 1}" onclick="price()"/>
+					 	<input type="checkbox" th:if="${s == 0}" class="disabled" onclick="price()"/>
+        			</span>
+        			
+        			<button class="left" th:value="'/neuCoupon'" onclick="location = this.value">Gutschein ausstellen</button>
+        			<button class="left" th:value="'/seats/' + ${event} + '/' + ${appointment}">Gutschein einlösen</button> <!--  Hinter url eine Zahl = Anzahl Gutscheine -->
+ 					
+        			<button id="sell" class="right" th:value="'/seats/' + ${event.identifier} + '/' + ${appointment}" onclick="attachSell(); location = this.value">Verkaufen</button>
+					<button id="reserve" class="right" th:value="'/seats/' + ${event.identifier} + '/' + ${appointment}" onclick="attachReserve(); location = this.value">Reservieren</button>
+        			<span class="textbox right" id="price">0.00€</span>
+        			<span class="textbox right"><span><input type="checkbox" id="ak" onclick="price()"/></span><label>Abendk.</label></span>
+        			<input type="hidden" id="eventPrice" th:value="${ev.getPrice().getAmountMinorInt()}" />
+        			<input type="hidden" id="appointmentPremiere" th:value="${a.getPremiere()}" />
+        		</seats>
+        		
+        		
+        		<tickets th:if="${eventClass == 'Tour' or eventClass == 'AudioGuide'}">
+        			<div th:each="a : ${ev.getAppointments()}" th:if="${a.toUrl() == appointment and eventClass == 'Tour'}">
+        				<button class="left" th:value="'/neuCoupon'" onclick="location = this.value">Gutschein ausstellen</button>
+        			    <a class="left" th:href="${a.toUrl() + '/sell'}"><button>Gutschein einlösen</button></a>
+        			   
+        				<a class="right" th:href="${a.toUrl() + '/sell'}"><button>Ticket Verkaufen</button></a>
+        				<span class="textbox right" th:text="${ev.getPrice().getAmountMinorInt()/100 + '.00€'}" ></span>
+        			    <span class="textbox right" th:text="${'Verkaufte Tickets: ' + ev.getSold()}"></span>
+        			</div>
+        			<div th:if="${eventClass == 'AudioGuide'}">
+        				<button class="left" th:value="'/neuCoupon'" onclick="location = this.value">Gutschein ausstellen</button>
+        			    <a class="left" href="coupon"><button>Gutschein einlösen</button></a>
+        			   
+        				<a class="right" href="back"><button>Rückgabe</button></a>
+        				<a class="right" href="sell"><button>Ausgabe</button></a>
+        				<span class="textbox right" th:text="${ev.getPrice().getAmountMinorInt()/100 + '.00€'}" ></span>
+        				<span class="textbox right" th:text="${'Verliehen: ' + ev.getLentCount()}" />
+        			</div>
+        		</tickets>
+			</div>
+
+			<script type="text/javascript">
+				function price() {
+					var price = document.getElementById("eventPrice").value / 100;
+					var returnprice = 0;
+					
+					if(document.getElementById("ak").checked == true) {price += 2;}
+					
+					if(document.getElementById("appointmentPremiere").value == "true") {price += 2;}
+					
+					var seats = document.getElementsByTagName("input");
+					if (seats.length > 250) { 
+						for (var i = 0; seats.length > i; i++){
+							if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+								if(seats[i].getAttribute("class") != "disabled") {
+									if(seats[i].getAttribute("class") != "reserved") {
+										if(seats[i].getAttribute("class") != "soldA") {
+											if(seats[i].getAttribute("class") != "soldV") {
+												if(seats[i].checked == true) { 
+													returnprice += price;
+													if (i > 99 ) returnprice += 5;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					else {
+						for (var i = 0; seats.length > i; i++){
+							if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+								if(seats[i].getAttribute("class") != "disabled") {
+									if(seats[i].getAttribute("class") != "reserved") {
+										if(seats[i].getAttribute("class") != "soldA") {
+											if(seats[i].getAttribute("class") != "soldV") {
+												if(seats[i].checked == true) { returnprice += price }
+											}
+										}
+									}
+								}	
+							}
+						}
+					}
+					document.getElementById("price").innerHTML = returnprice.toFixed(2) + "€";
+				}
+			
+			
+				function attachSell() {
+					var url = "";
+					var seats = document.getElementsByTagName("input");
+					for (var i = 0; seats.length > i; i++){
+						if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+							if (seats[i].getAttribute("class") == "disabled") {url += 0;}
+							else if (seats[i].getAttribute("class") == "reserved") {
+								if (seats[i].checked == true) {
+									if (document.getElementById("ak").checked == true) {url += 4;}
+									else {url += 3;}
+								}
+								else {url += 2;}
+							}
+							else if (seats[i].getAttribute("class") == "soldA") {url += 4;}
+							else if (seats[i].getAttribute("class") == "soldV") {url += 3;}
+							else if (seats[i].checked == true) {
+								if (document.getElementById("ak").checked == true) { url += 4;}
+								else {url += 3;}
+							}
+							else {url += 1;}
+						}
+					}
+					
+					var t = document.getElementById("sell").getAttribute("value") + "/" + url;
+					document.getElementById("sell").setAttribute("value", t);
+				}
+
+				function attachReserve() {
+					var url = "";
+					var seats = document.getElementsByTagName("input");
+					for (var i = 0; seats.length > i; i++){
+						if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+							if (seats[i].getAttribute("class") == "disabled") {url += 0;}
+							else if (seats[i].getAttribute("class") == "reserved") {url += 2;}
+							else if (seats[i].getAttribute("class") == "soldA") {url += 4;}
+							else if (seats[i].getAttribute("class") == "soldV") {url += 3;}
+							else if (seats[i].checked == true) {url += 2;}
+							else {url += 1;}
+						}
+					}
+					
+					var t = document.getElementById("reserve").getAttribute("value") + "/" + url;
+					document.getElementById("reserve").setAttribute("value", t);
+				}
+			</script>
+    </main>
+</body>
+</html>

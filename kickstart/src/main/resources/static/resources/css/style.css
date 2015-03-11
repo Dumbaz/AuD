@@ -1,0 +1,112 @@
+@charset "UTF-8";
+/* CSS Document */
+
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+	color: inherit;
+}
+
+html, body, nav { height: 100%; }
+
+body { margin:0; font:8pt "Lucida Grande"; position: relative;}   
+
+nav { float:left; background:#e8eaec; color:#616e79; width:250px; position: fixed; }
+
+nav header { height:100px; width: 100%; }
+nav header logo { position:absolute; top:30px; left:105px; width:40px; height:40px; background-color:#616e79; -webkit-mask: url(svg/mask.svg); -webkit-mask-size: 40px 40px; }
+
+nav ul { list-style-type:none; margin:0; padding:0; }
+nav ul li { position:relative; padding-left:60px; height:35px; line-height:35px; vertical-align:middle; border-left: solid 5px #e9eaec;  }
+nav ul li:hover { background:#f0f1f4; border-left: solid 5px #eff0f3; }
+nav ul li:hover, nav ul li:hover * { color:#a0a9bd; }
+nav ul li.highlight, li:hover.highlight { color:#977cdb; background: #ffffff; border-left: solid 5px #977cdb; }			
+
+nav ul li *.icon { position:absolute; width:12px; height:12px; background-color:#616e79; -webkit-mask-size: 12px 12px; top: 11px; left: 40px; }
+nav ul li:hover *.icon { background-color:#a0a9bd; }
+nav ul li.highlight *.icon, nav ul li.highlight:hover *.icon { background-color:#977cdb; }
+nav ul li sales { -webkit-mask: url(svg/commercial33.svg); -webkit-mask-size: 14px 14px!important; width:14px!important; height:14px!important; left: 39px!important; }
+nav ul li events { -webkit-mask: url(svg/small58.svg); }
+nav ul li staff { -webkit-mask: url(svg/user140.svg); }
+nav ul li resources { -webkit-mask: url(svg/list3.svg); }
+nav ul li finance { -webkit-mask: url(svg/stats1.svg); }
+
+.redbutton { position:absolute; width: 15px; height: 15px; background: #616e79; border-radius: 7px; line-height:15px; text-align: center; color:white !important;}
+.redbutton:hover { background: #CB3D51; } 
+
+nav .redbutton { left: 10px; bottom: 10px; color: #e9eaec;}
+
+main { min-width: 600px; margin: 20px 20px 20px 270px; float:left; width: calc(100% - 250px - 40px); color: #616e79;}
+main visible { background: rgba(255, 255, 255, 0.85); width: calc(100% - 250px - 40px); 
+			   height:calc(100% - 40px); position:fixed; min-width: calc(40px + 400px); }
+main visible popup { width:350px; display: block; position: absolute; background: #e8eaec; top:50%;
+    left:50%; padding: 19px; -webkit-transform: translate(-50%, -50%); }
+main visible popup .redbutton { left: 378px; top: -6px; color: #e9eaec;}
+
+main list { width: 200px; display:inline-block; vertical-align:top;}
+main list div.item { width:100%; height:20px; margin: 2px 0; line-height:20px; }
+main list div.item a.name {width: 155px; height:100%; padding-left:5px; display:inline-block; text-overflow: ellipsis; white-space:nowrap; overflow-y:hidden;  }
+main list div.item a.delete, main list div.item input[type="submit"].delete {width: 20px; height:100%; float: right; opacity:0; background:#CB3D51; color:white; text-align:center;}
+main list div.item a.add, main list div.item input[type="submit"].add {width: 20px; height:100%; float: right; opacity:0; background:#6d93ec; color:white; text-align:center; }
+main list div.item a.appointments {width: 20px; height:100%; float: right; opacity:0; background:#977cdb; color:white; text-align:center; }
+
+main list div.item input[type="submit"] {border: none;}
+main list div.item:hover input[type="submit"] {opacity:1;}
+
+main list div.item:hover {background: #e8eaec; }
+main popup list div.item:hover {background: white; }
+main list div.item:hover a.delete, main list div.item:hover a.add, main list div.item:hover a.appointments {opacity:1;}
+
+popup input[type="text"], input[type="number"], input[type="password"] {	
+	transition: all 0.5s ease-in-out;
+	width: 155px;
+	font:8pt "Lucida Grande";
+	border: 1px solid #616e79;
+	background-color: #e8eaec;
+	padding:5px 0px 5px 8px;
+	color: #616e79;
+	}
+	
+popup input[type="text"]:hover, input[type="number"]:hover, input[type="password"]:hover {
+	background-color:white;
+	}
+	
+popup input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
+	outline: 0;
+	background-color:white;
+	}
+	
+
+
+#finance canvas {padding-left: 25px; padding-top: 20px;}
+#finance button {margin-left: 55px;  margin-top: 25px;}
+
+seats { width: 556px; margin:25px; display:block; }  
+seats input[type="checkbox"] {-webkit-appearance: none; width:15px; height: 15px; background:#b9c4d5; margin: 4 4 0 0; cursor:pointer; transition: background 0.1s ease-in-out;}
+seats input[type="checkbox"].distance { margin-right: 15px;}
+seats input[type="checkbox"].reserved { background: #AD98E2; }
+seats input[type="checkbox"].soldA, seats input[type="checkbox"].soldV, #sales input[type="checkbox"].soldA:checked, #sales input[type="checkbox"].soldV:checked {background: #CB3D51; }
+seats input[type="checkbox"].disabled, #sales input[type="checkbox"].disabled:checked {background: #DDE3EC; }
+seats input[type="checkbox"]:focus { outline: 0; }
+seats input[type="checkbox"]:checked {background:#6d93ec; }
+
+#event { margin:25px 0 0  25px;}
+#date { margin-left: 292px;}
+
+seats input[type="checkbox"]#ak	{-webkit-appearance: checkbox !important; margin: 0; ; vertical-align:top;height: 10px;}
+
+seats .right, seats .left {margin-top:20px;}
+
+tickets {width: 552px; margin:25px; display:block; }
+.right {float:right; margin-left: 5px;}
+.left {float:left; margin-right: 5px;}
+.textbox {padding: 5px 8px 5px 8px; background:#e8eaec; font:8pt "Lucida Grande";}
+/*tickets button {padding: 4px 6px 4px 6px; background:#e8eaec; border: solid 1px #b9c4d5; font:8pt "Lucida Grande"; color: #616e79;}*/
+
+button, input[type="submit"] { -webkit-appearance: none; border-radius: 0; padding: 5px 8px 5px 8px; border: none; color: #616e79; background: #e8eaec; cursor:pointer; font:8pt "Lucida Grande";}
+popup button, input[type="submit"] { -webkit-appearance: none; border-radius: 0; padding: 5px 8px 5px 8px; border: none; color: #616e79; background: #b9c4d5 ; }
+button:hover, input[type="submit"]:hover {background: #616e79; color:white; outline:0}
+button#reserve:hover {background: #AD98E2; }
+button#sell:hover {background: #CB3D51;}
+
+main visible popup.ensemble {width:420px !important;}
+main visible popup.ensemble .redbutton {left:448px !important;}

@@ -1,0 +1,124 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <li class="highlight"><sales class="icon"></sales>Kartenverkauf</li>
+          <a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+          <a href="#"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">x</a>
+    </nav>
+    <main id="sales">
+    
+    	<visible>
+    		<popup>
+    		<a href="/" class="redbutton">x</a>
+    		
+    				<div class="salespoint">
+					<form method="post" onsubmit="return false;">
+							<label for="Customer">Customer:</label>
+							<input id="customer" type="text" name="customer" value="" required="required" />
+							<input type="hidden" id="targetUrl" value="/neuCoupon"/>
+							<input type="submit" value="Erstellen" onclick="validate()"/>
+							
+							<script type="text/javascript">
+	           					function validate() {
+									var inputAccepted = true;
+
+									if (document.forms[0].customer.value == "") {
+										inputAccepted = false;
+									}
+									
+									if(inputAccepted == true) {
+										document.forms[0].action = document.getElementById("targetUrl").value; 
+										document.forms[0].submit();
+									}
+								}
+							</script>
+					</form>
+    			</div>
+    			
+    		</popup>
+    	</visible>
+
+            <select id="event" th:remove="all-but-first" onchange="location = this.options[this.selectedIndex].value">
+            	<div th:each="ev : ${catalog}">
+            		<div th:if="${ev.getAppointments().size() > 0}">
+            			<option selected="selected" th:if="${ev.toUrl() == event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.toUrl()} + '/' + ${ev.getAppointments().get(0).toUrl()}}"></option>
+						<option th:if="${ev.toUrl() != event}" th:text="${ev.name}" th:value="@{'/seats/' + ${ev.toUrl()} + '/' + ${ev.getAppointments().get(0).toUrl()}}"></option>
+					</div>
+				</div>
+			</select>
+        
+  		    <select id="date" th:remove="all-but-first" th:each="ev : ${catalog}" th:if="${ev.toUrl() == event}" onchange="location = this.options[this.selectedIndex].value">
+		    	<div th:each="a : ${ev.getAppointments()}">
+		    		<option selected="selected" th:if="${a.toUrl() == appointment}" th:text="${a.toString()}" th:value="@{'/seats/' + ${ev.toUrl()} + '/' + ${a.toUrl()}}"></option>
+		    		<option th:if="${a.toUrl() != appointment}" th:text="${a.toString()}" th:value="@{'/seats/' + ${ev.toUrl()} + '/' + ${a.toUrl()}}"></option>
+		    	</div>
+			</select>
+			
+			<div th:remove="all-but-first" th:each="ev : ${catalog}" th:if="${ev.toUrl() == event}">
+	        	<seats th:each="a : ${ev.getAppointments()}" th:if="${a.toUrl() == appointment}">
+	        		<span th:each="s : ${a.getSeats()}">
+	        			<input type="checkbox" th:if="${s == 3}" class="sold"/>
+	        			<input type="checkbox" th:if="${s == 2}" class="reserved"/>
+	        			<input type="checkbox" th:if="${s == 1}"/>
+					 	<input type="checkbox" th:if="${s == 0}" class="disabled"/>
+        			</span>
+        		</seats>
+			</div>
+			
+			<button id="sell" th:value="'/seats/' + ${event} + '/' + ${appointment}" onclick="attachSell(); location = this.value">Verkaufen</button>
+			
+			<script type="text/javascript">
+				function attachSell() {
+					var url = "";
+					var seats = document.getElementsByTagName("input");
+					for (var i = 0; seats.length > i; i++){
+						if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+							if (seats[i].getAttribute("class") == "disabled") {url += 0;}
+							else if (seats[i].getAttribute("class") == "reserved") {
+								if (seats[i].checked == true) {url += 3;}
+								else {url += 2;}
+								}
+							else if (seats[i].getAttribute("class") == "sold") {url += 3;}
+							else if (seats[i].checked == true) {url += 3;}
+							else {url += 1;}
+						}
+					}
+					
+					var t = document.getElementById("sell").getAttribute("value") + "/" + url;
+					document.getElementById("sell").setAttribute("value", t);
+				}
+			</script>
+			
+			<button id="reserve" th:value="'/seats/' + ${event} + '/' + ${appointment}" onclick="attachReserve(); location = this.value">Reservieren</button>
+			
+			<script type="text/javascript">
+				function attachReserve() {
+					var url = "";
+					var seats = document.getElementsByTagName("input");
+					for (var i = 0; seats.length > i; i++){
+						if (seats[i].parentNode.parentNode.tagName == "SEATS") {
+							if (seats[i].getAttribute("class") == "disabled") {url += 0;}
+							else if (seats[i].getAttribute("class") == "reserved") {url += 2;}
+							else if (seats[i].getAttribute("class") == "sold") {url += 3;}
+							else if (seats[i].checked == true) {url += 2;}
+							else {url += 1;}
+						}
+					}
+					
+					var t = document.getElementById("reserve").getAttribute("value") + "/" + url;
+					document.getElementById("reserve").setAttribute("value", t);
+				}
+			</script>
+    </main>
+</body>
+</html>

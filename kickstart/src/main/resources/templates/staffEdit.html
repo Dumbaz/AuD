@@ -1,0 +1,71 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+        	<a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+       		<a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+        	<li class="highlight"><staff class="icon"></staff>Personalverwaltung</li>
+        	<a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+       		<a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+		<visible>
+			<popup>
+	           	<a href="/staff/" class="redbutton">×</a>
+	            <form method="post" action="saveUser">
+		            <input type="hidden" name="oldname" th:value="${customer.getUserAccount().getId()}" />
+		            <label>Name:</label>
+		            <input type="text" name="name" th:value="${customer.getUserAccount().getFirstname() + ' ' + customer.getUserAccount().getLastname()}" required="required" />
+		           	<br /><br />
+		
+					<label>Rolle:</label>
+					<select name="role">
+						<option selected="selected" th:if="${customerRole.equals('Actor')}" value="Actor">Schauspieler</option>
+						<option th:if="${customerRole != 'Actor'}" value="Actor">Schauspieler</option>
+			      		<option selected="selected" th:if="${customerRole.equals('Technical Employee')}" value="Technical Employee">Technischer Mitarbeiter</option>
+			    		<option th:if="${customerRole != 'Technical Employee'}" value="Technical Employee">Technischer Mitarbeiter</option>
+			    		<option selected="selected" th:if="${customerRole.equals('Ticket Seller')}" value="Ticket Seller">Ticketverkäufer</option>
+		    			<option th:if="${customerRole != 'Ticket Seller'}" value="Ticket Seller">Ticketverkäufer</option>
+		    		</select>
+		    		<br /><br />
+					<label>Gehalt:</label>
+					<input name="pay" type="number" th:value="${customer.pay}" />
+					<br /><br />
+					<label>Passwort:</label>
+					<input type="password" name="password" th:value="${customer.userAccount.password}" />
+					<br /><br />
+					<input type="submit"  value="Speichern" />
+				</form> 	
+			</popup>
+		</visible>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Mitarbeiter</a></b>
+			</div>
+			
+			<div class="item" th:each="s : ${staffCatalog}" th:if="${s.getExpired() == false}">
+				<a class="name" th:text="${s.getUserAccount().getFirstname() + ' ' + s.getUserAccount().getLastname()}"></a>
+			</div>	
+		</list>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Ensembles</a></b>
+			</div>
+			
+			<div class="item" th:each="e : ${ensembleCatalog}">
+				<a class="name" th:text="${e.getName()}"></a>
+			</div>	
+		</list>
+			
+    </main>
+</body>
+</html>

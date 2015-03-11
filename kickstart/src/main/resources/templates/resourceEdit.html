@@ -1,0 +1,127 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+          <a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <li class="highlight"><resources class="icon"></resources>Ressourcen</li>
+          <a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+    	<visible>
+            <popup>
+           		<a href="/resources/" class="redbutton">×</a>
+                <form method="post" onsubmit="return false;">
+                	<input type="hidden" name="pid" value="0" th:value="${res.identifier}" />
+                    <label for="Name">Name:</label>
+                    <input id="name" type="text" name="name" value="" th:value="${res.name}" required="required" />
+           	        <br /><br />
+                    <label for="Raum">Raum:</label>
+                    <select id = "room" name="room">
+                    	<option selected="selected" th:if="${res.getRoom().getType() == 'Lager'}" value = "Lager">Lager</option>
+                    	<option th:if="${res.getRoom().getType() != 'Lager'}" value = "Lager">Lager</option>
+                    	<option selected="selected" th:if="${res.getRoom().getType() == 'Großer Saal'}" value = "Großer Saal">Großer Saal</option>
+                    	<option th:if="${res.getRoom().getType() != 'Großer Saal'}" value = "Großer Saal">Großer Saal</option>
+                    	<option selected="selected" th:if="${res.getRoom().getType() == 'Kleiner Saal'}" value = "Kleiner Saal">Kleiner Saal</option>
+                    	<option th:if="${res.getRoom().getType() != 'Kleiner Saal'}" value = "Kleiner Saal">Kleiner Saal</option>
+                    </select>
+                    <br /><br />
+                    <label for="Miete">Miete:</label>
+                    <input id="rent" type="number" name="rent" value="" th:value="${res.rent}" required="required" oninput="onInputCheck(this)" />
+                                            
+                                           	<script type="text/javascript">
+					           					function onInputCheck() {
+													var inputAccepted = true;
+								
+													document.forms[0].rent.setCustomValidity('');
+				
+													if (document.forms[0].rent.value == "") {
+														inputAccepted = false;
+													}
+													if (parseFloat(document.forms[0].rent.value) > 2147483647) {
+														inputAccepted = false;
+														document.forms[0].rent.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+													}
+													if (0 > parseFloat(document.forms[0].rent.value)) {
+														inputAccepted = false;
+														document.forms[0].rent.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+													}
+												}
+											</script> 
+                                            
+                                            <br /><br />
+                                            
+                                            <input type="hidden" id="targetUrl" value="/edit"/>
+                                            <input type="submit" value="Speichern" onclick="validate()"/>
+                                            
+                                            <script type="text/javascript">
+					           					function validate() {
+													var inputAccepted = true;
+													
+													document.forms[0].rent.setCustomValidity('');
+						
+													if (document.forms[0].name.value == "") {
+														inputAccepted = false;
+													}
+													if (document.forms[0].rent.value == "") {
+														inputAccepted = false;
+													}
+													if (parseFloat(document.forms[0].rent.value) > 2147483647) {
+														inputAccepted = false;
+														document.forms[0].rent.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+													}
+													if (0 > parseFloat(document.forms[0].rent.value)) {
+														inputAccepted = false;
+														document.forms[0].rent.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+													}
+													
+													
+													if(inputAccepted == true) {
+														document.forms[0].action = document.getElementById("targetUrl").value; 
+														document.forms[0].submit();
+													}
+												}
+											</script>  
+					
+                                    </form>
+            </popup>
+        </visible>
+        
+		<list>
+			<div class="item">
+				<b><a class="name">Bühnen</a></b>
+			</div>
+			<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Bühne' and res.getExpired() == false}">
+				<a class="name" th:text="${res.name}"></a>
+			</div>	
+		</list>
+			
+		<list>
+			<div class="item">
+				<b><a class="name">Requisiten</a></b>
+			</div>
+			<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Requisite' and res.getExpired() == false}">
+				<a class="name" th:text="${res.name}"></a>	
+			</div>	
+		</list>
+			
+		<list>
+			<div class="item">
+				<b><a class="name">Technische Anlagen</a></b>
+			</div>
+			<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Technische Anlage' and res.getExpired() == false}">
+				<a class="name" th:text="${res.name}"></a>
+			</div>	
+		</list>
+		
+    </main>
+</body>
+</html>

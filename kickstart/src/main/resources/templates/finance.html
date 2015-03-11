@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../resources/css/style.css" />
+<script src='../resources/js/Chart.min.js'></script>
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+          <a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+          <li class="highlight"><finance class="icon"></finance>Finanzverwaltung</li>
+        </ul>
+        <a href="#" class="redbutton">x</a>
+    </nav>
+    <main>
+    	<form>
+			<input name="data" type="hidden" th:value="${jan + ',' + feb + ',' + mar + ',' + apr + ',' + may + ',' + jun + ',' + jul + ',' + aug + ',' + sep + ',' + oct + ',' + nov + ',' + dec }" />
+		</form>
+        <section id="finance">
+            <canvas id="graph" width="600" height="300"></canvas>
+            <script>
+            	var fdata = document.forms[0].data.value;
+            	var d = fdata.split(",");
+            	alert
+                var financeData = {
+                    labels : ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+                    datasets : [
+                        {
+                            fillColor : "rgba(109,147,236, 0.5)",
+                            strokeColor : "#6d93ec",
+                            pointColor : "#fff",
+                            pointStrokeColor : "#6d93ec",
+                            data : [d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8],d[9],d[10],d[11]]
+                        }
+                    ]
+                }
+                var graph = document.getElementById('graph').getContext('2d');
+                new Chart(graph).Line(financeData, {bezierCurve: true});
+            </script>
+            
+            <button>Abrechung erstellen</button>
+            
+        </section>
+    </main>
+</body>
+</html>

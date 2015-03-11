@@ -1,0 +1,74 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+        	<a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+       		<a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+        	<li class="highlight"><staff class="icon"></staff>Personalverwaltung</li>
+        	<a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+       		<a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+		<visible>
+			<popup class="ensemble">
+	           	<a href="/staff/" class="redbutton">×</a>
+	            <list>
+	            	<div class="item">
+	            		<b><a class="name">Schauspieler</a></b>
+	            	</div>
+	            	<div class="item" th:each="a : ${allActors}" th:if="${a.getExpired() == false}">
+			 		<form method="post" action="addActor">
+	            			<input type="hidden" name="uId" th:value="${a.getUserAccount().getId()}" />
+	            			<input type="hidden" name="ensembleName" th:value="${ensemble}" />
+							<a class="name" th:text="${a.getUserAccount().getFirstname() + ' ' + a.getUserAccount().getLastname()}" />
+							<input class="add" type="submit" value="+" />
+						</form>
+					</div>	
+	            </list>
+	           	<list>
+	            	<div class="item">
+	            		<b><a class="name">Hinzugefügt</a></b>
+	            	</div>
+	            	<div class="item" th:each="a : ${ensembleActors}">
+	            		<form method="post" action="removeActor">
+	            			<input type="hidden" name="uId" th:value="${a.getUserAccount().getId()}" />
+	            			<input type="hidden" name="ensembleName" th:value="${ensemble}" />
+							<a class="name" th:text="${a.getUserAccount().getFirstname() + ' ' + a.getUserAccount().getLastname()}" />
+							<input class="delete" type="submit" value="×" />
+						</form>
+					</div>	
+	            </list>
+			</popup>
+		</visible>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Mitarbeiter</a></b>
+			</div>
+			
+			<div class="item" th:each="s : ${staffCatalog}" th:if="${s.getExpired() == false}">
+				<a class="name" th:text="${s.getUserAccount().getFirstname() + ' ' + s.getUserAccount().getLastname()}"></a>
+			</div>	
+		</list>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Ensembles</a></b>
+			</div>
+			
+			<div class="item" th:each="e : ${ensembleCatalog}">
+				<a class="name" th:text="${e.getName()}"></a>
+			</div>	
+		</list>
+			
+			
+    </main>
+</body>
+</html>

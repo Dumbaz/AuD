@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+          <a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <li class="highlight"><resources class="icon"></resources>Ressourcen</li>
+          <a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+		<list>
+				<div class="item">
+					<b><a class="name">Bühnen</a></b>
+					<a class="add" href="add/stage">+</a>
+				</div>
+				<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Bühne' and res.getExpired() == false}">
+					<a class="name" th:href="'/resources/' + ${res.identifier}" th:text="${res.name}"></a>
+					<a class="delete" th:href="'/resources/' + ${res.identifier} + '/delete'" >×</a>
+				</div>	
+			</list>
+			
+			<list>
+				<div class="item">
+					<b><a class="name">Requisiten</a></b>
+					<a class="add" href="add/requisite" >+</a>
+				</div>
+				<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Requisite' and res.getExpired() == false}">
+					<a class="name" th:href="'/resources/' + ${res.identifier}" th:text="${res.name}"></a>
+					<a class="delete" th:href="'/resources/' + ${res.identifier} + '/delete'" >×</a>
+				</div>	
+			</list>
+			
+			<list>
+				<div class="item">
+					<b><a class="name">Technische Anlagen</a></b>
+					<a class="add" href="add/technicalobject" onclick="set('Technische Anlage')">+</a>
+				</div>
+				<div class="item" th:each="res : ${catalog}" th:if="${res.type == 'Technische Anlage' and res.getExpired() == false}">
+					<a class="name" th:href="'/resources/' + ${res.identifier}" th:text="${res.name}"></a>
+					<a class="delete" th:href="'/resources/' + ${res.identifier} + '/delete'" >×</a>
+				</div>	
+			</list>
+    </main>
+</body>
+</html>

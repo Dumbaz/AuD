@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+          <li class="highlight"><events class="icon"></events>Veranstaltungsverwaltung</li>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+          <a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Veranstaltungen</a></b>
+				<a class="add" href="add/play">+</a>
+			</div>
+			
+			<div class="item" th:each="ev : ${catalog}" th:if="${ev.getExpired() == false}">
+				<a class="name" th:href="@{'/events/' + ${ev.identifier}}" th:text="${ev.name}"></a>
+				<a th:if="${ev.getClass().getName().substring(19) != 'AudioGuide'}" class="delete" th:href="@{'/events/delete/' + ${ev.identifier}}" >×</a>
+				<a th:if="${ev.getClass().getName().substring(19) != 'AudioGuide'}" class="appointments" th:href="@{'/events/' + ${ev.identifier} + '/appointments'}" >#</a>
+			</div>	
+		</list>
+	
+			
+    </main>
+</body>
+</html>

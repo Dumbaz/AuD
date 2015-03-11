@@ -1,0 +1,69 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+        	<a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+       		<a href="/events/"><li><events class="icon"></events>Veranstaltungsverwaltung</li></a>
+        	<li class="highlight"><staff class="icon"></staff>Personalverwaltung</li>
+        	<a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+       		<a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+		<visible>
+			<popup>
+	           	<a href="/staff/" class="redbutton">×</a>
+	           <form id="form" method="post" action="createUser"> 
+						<label>Vorname:</label>
+						<input type="text" name="firstname" />
+						<br /><br />
+						<label>Nachname:</label>
+						<input type="text" name="lastname" />
+						<br /><br />
+						<label>Rolle:</label>
+						<select name="role" > 
+							<option value="Actor">Schauspieler</option>
+			      			<option value="Technical Employee">Technischer Mitarbeiter</option>
+			    			<option value="Ticket Seller">Ticketverkäufer</option>
+		    			</select>
+		    			<br /><br />
+						<label>Gehalt:</label>
+						<input type="number" name="pay" />
+						<br /><br />
+						<label>Passwort:</label>
+						<input type="text" name="password"  />
+						<input type="submit" value="Erstellen" />
+				</form> 	
+			</popup>
+		</visible>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Mitarbeiter</a></b>
+				<a class="add">+</a>
+			</div>
+			
+			<div class="item" th:each="s : ${staffCatalog}" th:if="${s.getExpired() == false}">
+				<a class="name" th:text="${s.getUserAccount().getFirstname() + ' ' + s.getUserAccount().getLastname()}"></a>
+			</div>	
+		</list>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Ensembles</a></b>
+			</div>
+			
+			<div class="item" th:each="e : ${ensembleCatalog}">
+				<a class="name" th:text="${e.getName()}"></a>
+			</div>	
+		</list>
+			
+    </main>
+</body>
+</html>

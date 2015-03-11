@@ -1,0 +1,121 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../../../resources/css/style.css" />
+</head>
+<body>
+	<nav>
+    	<header><logo></logo></header>
+        <ul>
+          <a href="/"><li><sales class="icon"></sales>Kartenverkauf</li></a>
+          <li class="highlight"><events class="icon"></events>Veranstaltungsverwaltung</li>
+          <a href="/staff/"><li><staff class="icon"></staff>Personalverwaltung</li></a>
+          <a href="/resources/"><li><resources class="icon"></resources>Ressourcen</li></a>
+          <a href="/finance/"><li><finance class="icon"></finance>Finanzverwaltung</li></a>
+        </ul>
+        <a href="#" class="redbutton">×</a>
+    </nav>
+    <main>
+	    <visible>
+	   		<popup>
+	            <a href="../../events/" class="redbutton">×</a>
+	                       
+	            <select onchange="location = this.options[this.selectedIndex].value">
+            		<option selected="selected" th:if="${eventClass == 'play'}" th:value="@{/events/add/play}">Theaterstück</option>
+					<option th:if="${eventClass != 'play'}" th:value="@{/events/add/play}">Theaterstück</option>
+					<option selected="selected" th:if="${eventClass == 'guestplay'}" th:value="@{/events/add/guestplay}">Gastspiel</option>
+					<option th:if="${eventClass != 'guestplay'}" th:value="@{/events/add/guestplay}">Gastspiel</option>
+					<option selected="selected" th:if="${eventClass == 'amateurplay'}" th:value="@{/events/add/amateurplay}">Laientheaterstück</option>
+					<option th:if="${eventClass != 'amateurplay'}" th:value="@{/events/add/amateurplay}">Laientheaterstück</option>
+					<option selected="selected" th:if="${eventClass == 'cabaret'}" th:value="@{/events/add/cabaret}">Kleinkunstveranstaltung</option>
+					<option th:if="${eventClass != 'cabaret'}" th:value="@{/events/add/cabaret}">Kleinkunstveranstaltung</option>
+					<option selected="selected" th:if="${eventClass == 'tour'}" th:value="@{/events/add/tour}">Führung</option>
+					<option th:if="${eventClass != 'tour'}" th:value="@{/events/add/tour}">Führung</option>
+				</select> 
+	                 
+	            <br /><br />             
+	                               
+	            <form method="post" onsubmit="return false;">
+					
+					<label for="Name">Name:</label>
+                    <input type="text" name="name" required="required" />
+                    
+                    <br /><br />
+                    
+                    <div th:if="${eventClass == 'play' or eventClass == 'guestplay' or eventClass == 'amateurplay' or eventClass == 'cabaret'}">
+	                	<label for="Raum">Raum:</label>
+	                    <select name="room">
+	                    	<option value = "Großer Saal">Großer Saal</option>
+	                        <option value = "Kleiner Saal">Kleiner Saal</option>
+	                    </select>
+	                    <br /><br />
+	       			</div>
+	       			
+                    <label for="Preis">Preis:</label>
+                    <input type="number" name="price" required="required" /> <span th:if="${eventClass == 'guestplay'}"> + Aufschlag</span>
+
+                    <br /><br />
+                     
+					<div th:if="${eventClass == 'tour'}">
+
+	                	<label>Mitarbeiter:</label>
+	                    <select name="employee">
+	                    	<option th:each="s : ${staffCatalog}" th:text="${s.getUserAccount().getId()}" th:value="${s.getUserAccount().getId()}"></option>
+	                    </select>
+	                    <br /><br />
+	            	</div>
+	            	
+	            	<input type="hidden" id="eventList" th:value="${eventList}"/>
+					<input type="hidden" id="targetUrl" th:value="'/events/add/' + ${eventClass} + '/done'"/>
+	           		<input type="submit" value="Erstellen" onclick="validate()"/>        
+	           		
+	           		<script type="text/javascript">
+	           			function validate() {
+							var eventList = document.getElementById("eventList").value;
+							var events = eventList.split(",");
+							var inputAccepted = true;
+							
+							document.forms[0].name.setCustomValidity('');
+							document.forms[0].price.setCustomValidity('');
+							
+							for (var i = 0; events.length-1 > i; i++) {
+								if (events[i] == document.forms[0].name.value) {
+									inputAccepted = false;
+									document.forms[0].name.setCustomValidity('Diese Veranstaltung existiert bereits.');
+								}
+							}
+							if (document.forms[0].price.value == "") {
+								inputAccepted = false;
+							}
+							if (parseFloat(document.forms[0].price.value) > 2147483647) {
+								inputAccepted = false;
+								document.forms[0].price.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+							}
+							if (0 > parseFloat(document.forms[0].price.value)) {
+								inputAccepted = false;
+								document.forms[0].price.setCustomValidity('Bitte geben sie eine Zahl von 0 bis 2147483647 ein.');
+							}
+							
+							
+							if(inputAccepted == true) {
+								document.forms[0].action = document.getElementById("targetUrl").value; 
+								document.forms[0].submit();
+							}
+						}
+					</script>        
+	        	</form>
+	    	</popup>
+		</visible>
+		
+		<list>
+			<div class="item">
+				<b><a class="name">Veranstaltungen</a></b>
+			</div>
+			
+			<div  class="item" th:each="ev : ${catalog}">
+				<a class="name" th:text="${ev.name}"></a>
+			</div>	
+		</list>
+    </main>
+</body>
+</html>
