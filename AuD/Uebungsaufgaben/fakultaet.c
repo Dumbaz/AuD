@@ -1,4 +1,7 @@
+#include "fakultaet.h"
+
 #include <stdio.h> //Standardbibliothek für Ein- und Ausgabe
+
 
 int fakultaet(int a) { //Funktion zum berechnen der Fakultät
 	if (a == 0)

@@ -50,7 +50,7 @@ int splitter(int betrag) {
 
 
 	int main(int argc, char const *argv[]) {
-	int eingabe = 21367;
+	int eingabe = 21368;
 	printf("Bitte einen Betrag eingeben\n");
 	scanf("%d", &eingabe);
 	printf("%d\n", splitter(eingabe));
